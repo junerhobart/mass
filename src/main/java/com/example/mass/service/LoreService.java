@@ -36,10 +36,13 @@ public final class LoreService {
     public void updateLore(@NotNull ItemStack item) {
         if (!config.loreEnabled) return;
         if (item.getType() == Material.AIR) return;
-        // Stackable items (food, materials, blocks, etc.) must not have their NBT modified —
-        // custom lore makes them unable to merge with clean items of the same type,
-        // which breaks furnace fuel/ingredient stacking and normal inventory behaviour.
-        if (item.getType().getMaxStackSize() > 1) return;
+        // Stackable items must never carry weight lore — it makes them unable to merge with
+        // clean items of the same type and breaks furnace stacking. Actively scrub any
+        // leftover weight lore so pre-tagged items become stackable again.
+        if (item.getType().getMaxStackSize() > 1) {
+            clearLore(item);
+            return;
+        }
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
