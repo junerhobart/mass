@@ -38,7 +38,3 @@ All commands require the `mass.admin` permission.
 ## Configuration
 
 Edit `plugins/Mass/config.yml`. You can change individual item weights, penalty thresholds, vehicle settings, and enchantment behavior. Run `/mass reload` to apply changes without restarting.
-
-## License
-
-Free to use, fork, and modify with credit. Do not claim as your own or distribute on platforms like Modrinth or CurseForge without permission. Do not sell.
