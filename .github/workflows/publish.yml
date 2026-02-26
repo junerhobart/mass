@@ -1,0 +1,76 @@
+name: Publish
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  publish:
+    name: Publish to Modrinth
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
+
+      - name: Set version from release tag
+        run: mvn -B versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+
+      - name: Build with Maven
+        run: mvn -B clean package --file pom.xml
+
+      - name: Publish to Modrinth
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: ${{ vars.MODRINTH_PROJECT_ID }}
+          name: ${{ github.event.release.name }}
+          version: ${{ github.event.release.tag_name }}
+          changelog: ${{ github.event.release.body }}
+          loaders: paper
+          game-versions: 1.21.11
+          files: target/Mass-${{ github.event.release.tag_name }}.jar
+
+      - name: Notify Discord
+        if: success()
+        run: |
+          python3 -c "
+          import urllib.request, json, os
+          changelog = os.environ.get('CHANGELOG', '').strip()
+          payload = {
+            'embeds': [{
+              'title': 'Mass ${{ github.event.release.tag_name }} has been released!',
+              'description': changelog if changelog else 'No changelog provided.',
+              'url': '${{ github.event.release.html_url }}',
+              'color': 0xF5A623,
+              'fields': [
+                {
+                  'name': 'Download',
+                  'value': '[GitHub Release](${{ github.event.release.html_url }}) · [Modrinth](https://modrinth.com/plugin/${{ vars.MODRINTH_PROJECT_ID }})',
+                  'inline': False
+                }
+              ],
+              'footer': {'text': 'Paper 1.21.11'}
+            }]
+          }
+          url = os.environ['DISCORD_WEBHOOK']
+          thread_id = os.environ.get('DISCORD_THREAD_ID', '').strip()
+          if thread_id:
+            url += ('&' if '?' in url else '?') + 'thread_id=' + thread_id
+          req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode(),
+            headers={'Content-Type': 'application/json'}
+          )
+          urllib.request.urlopen(req)
+          "
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_THREAD_ID: ${{ vars.DISCORD_THREAD_ID }}
+          CHANGELOG: ${{ github.event.release.body }}

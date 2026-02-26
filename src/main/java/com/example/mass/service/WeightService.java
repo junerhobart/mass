@@ -5,6 +5,7 @@ import com.example.mass.config.MassConfig;
 import com.example.mass.enchant.LighteningEnchant;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -86,6 +87,14 @@ public final class WeightService {
         for (ItemStack item : player.getInventory().getStorageContents()) {
             if (item != null && item.getType() != Material.AIR)
                 total += getBaseWeight(item) * item.getAmount();
+        }
+
+        // Chest boat cargo counts against the rider, same as a donkey chest
+        if (player.getVehicle() instanceof ChestBoat chestBoat) {
+            for (ItemStack item : chestBoat.getInventory().getContents()) {
+                if (item != null && item.getType() != Material.AIR)
+                    total += getBaseWeight(item) * item.getAmount();
+            }
         }
 
         return total;

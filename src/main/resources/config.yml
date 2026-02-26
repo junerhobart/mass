@@ -147,6 +147,11 @@ weights:
       SHIELD:   2.5
       ELYTRA:   0.5
       WOLF_ARMOR: 1.5
+      SADDLE:   0.5
+      LEATHER_HORSE_ARMOR: 0.5
+      IRON_HORSE_ARMOR:    2.0
+      GOLDEN_HORSE_ARMOR:  7.5
+      DIAMOND_HORSE_ARMOR: 5.0
 
       # Buckets  (steel bucket ≈ 0.5 kg; water/milk ≈ 5 kg; lava is dense)
       BUCKET:              1.2
@@ -522,13 +527,8 @@ penalties:
 vehicles:
   horses:
     enabled: true
-    speed_reduction_per_kg: 0.010   # 24 kg diamond rider = 24% slower horse
+    speed_reduction_per_kg: 0.005   # 24 kg diamond rider = 12% slower horse
     max_reduction: 0.85
-  boats:
-    enabled: true
-    speed_reduction_per_kg: 0.012   # boats feel water resistance more
-    max_reduction: 0.80
-    base_speed: 0.40                # vanilla boat max speed in water (blocks/tick)
   elytra:
     enabled: true
     disable_above: 12.0             # ~iron armour weight; diamond armour is 24 kg
