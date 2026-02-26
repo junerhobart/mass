@@ -7,12 +7,13 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -79,10 +80,10 @@ public final class EncumbranceService {
             player.setSprinting(false);
         }
 
-        // Apply horse/donkey speed penalty if player is mounted
+        // Apply speed penalty to any living vehicle (horse, donkey, pig, strider, llama, etc.)
         Entity vehicle = player.getVehicle();
-        if (vehicle instanceof AbstractHorse horse) {
-            applyHorsePenalty(player, horse, totalWeight);
+        if (vehicle instanceof LivingEntity livingVehicle && !(vehicle instanceof Player)) {
+            applyLivingVehiclePenalty(player, livingVehicle, totalWeight);
         }
 
         if (config.debugLogPenaltyChanges) {
@@ -92,13 +93,13 @@ public final class EncumbranceService {
         }
     }
 
-    public void applyHorsePenalty(@NotNull Player player, @NotNull AbstractHorse horse, double riderWeight) {
+    public void applyLivingVehiclePenalty(@NotNull Player player, @NotNull LivingEntity vehicle, double riderWeight) {
         if (!config.vehicleHorsesEnabled) return;
 
         double load = riderWeight;
 
-        // Include donkey/mule chest contents in the total load
-        if (horse instanceof ChestedHorse chestedHorse && chestedHorse.isCarryingChest()) {
+        // Include chest contents for donkeys, mules, llamas with chests
+        if (vehicle instanceof ChestedHorse chestedHorse && chestedHorse.isCarryingChest()) {
             for (ItemStack item : chestedHorse.getInventory().getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
                     load += weightService.getBaseWeight(item) * item.getAmount();
@@ -106,7 +107,7 @@ public final class EncumbranceService {
             }
         }
 
-        AttributeInstance attr = horse.getAttribute(Attribute.MOVEMENT_SPEED);
+        AttributeInstance attr = vehicle.getAttribute(Attribute.MOVEMENT_SPEED);
         if (attr == null) return;
         removeKey(attr, HORSE_KEY);
 
@@ -117,9 +118,19 @@ public final class EncumbranceService {
         }
     }
 
-    public void removeHorseModifier(@NotNull AbstractHorse horse) {
-        AttributeInstance attr = horse.getAttribute(Attribute.MOVEMENT_SPEED);
+    public void removeLivingVehicleModifier(@NotNull LivingEntity vehicle) {
+        AttributeInstance attr = vehicle.getAttribute(Attribute.MOVEMENT_SPEED);
         if (attr != null) removeKey(attr, HORSE_KEY);
+    }
+
+    public void tickWater(@NotNull Player player) {
+        double weight = weightService.computeTotalWeight(player);
+        if (weight <= config.waterSinkAbove) return;
+        Vector vel = player.getVelocity();
+        if (vel.getY() > -config.waterSinkSpeed) {
+            vel.setY(-config.waterSinkSpeed);
+            player.setVelocity(vel);
+        }
     }
 
     public boolean isSprintDisabled(@NotNull Player player) {

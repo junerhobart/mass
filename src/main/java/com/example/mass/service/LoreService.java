@@ -40,8 +40,9 @@ public final class LoreService {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        double base      = weightService.getBaseWeight(item);
-        double effective = weightService.getEffectiveWeight(item);
+        int    amount    = item.getAmount();
+        double base      = weightService.getBaseWeight(item)      * amount;
+        double effective = weightService.getEffectiveWeight(item) * amount;
 
         List<Component> lore = new ArrayList<>(meta.lore() != null ? meta.lore() : List.of());
 

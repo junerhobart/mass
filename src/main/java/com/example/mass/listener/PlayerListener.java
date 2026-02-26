@@ -128,7 +128,9 @@ public final class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onJump(PlayerJumpEvent e) {
-        if (encumbrance.isJumpDisabled(e.getPlayer()))
+        Player player = e.getPlayer();
+        if (player.isInWater()) return;
+        if (encumbrance.isJumpDisabled(player))
             e.setCancelled(true);
     }
 

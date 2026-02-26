@@ -498,15 +498,15 @@ penalties:
 
     - max_weight: 12.0
       speed_multiplier: 0.92
-      jump_multiplier:  0.88
+      jump_multiplier:  0.92
 
     - max_weight: 20.0
       speed_multiplier: 0.80
-      jump_multiplier:  0.70
+      jump_multiplier:  0.78
 
     - max_weight: 28.0
       speed_multiplier: 0.62
-      jump_multiplier:  0.25    # diamond armour lands here
+      jump_multiplier:  0.45    # diamond armour lands here — still jumpable
 
     - max_weight: 9999.0
       speed_multiplier: 0.45
@@ -522,16 +522,28 @@ penalties:
 vehicles:
   horses:
     enabled: true
-    # Fraction of speed lost per kg of total rider+cargo load.
-    # 24 kg diamond rider → 24 × 0.010 = 24% slower horse.
-    speed_reduction_per_kg: 0.010
-    # Hard cap — horse never drops below this fraction of base speed.
+    speed_reduction_per_kg: 0.010   # 24 kg diamond rider = 24% slower horse
     max_reduction: 0.85
+  boats:
+    enabled: true
+    speed_reduction_per_kg: 0.012   # boats feel water resistance more
+    max_reduction: 0.80
+    base_speed: 0.40                # vanilla boat max speed in water (blocks/tick)
   elytra:
     enabled: true
-    # Weight above which elytra gliding is prevented entirely.
-    # 12 kg = roughly iron armour + a few items.
-    disable_above: 12.0
+    disable_above: 12.0             # ~iron armour weight; diamond armour is 24 kg
+
+# -------------------------------------------------------
+#  WATER
+# -------------------------------------------------------
+water:
+  # Weight above which the player actively sinks in water.
+  # Full netherite armour alone is 34 kg; 35 = netherite + anything extra.
+  sink_above: 35.0
+  # Downward velocity applied every 4 ticks while sinking.
+  # Normal swim-up force is ~0.04 blocks/tick, so 0.15 makes surfacing
+  # very difficult at this weight level.
+  sink_speed: 0.15
 
 # -------------------------------------------------------
 #  LIGHTENING ENCHANTMENT

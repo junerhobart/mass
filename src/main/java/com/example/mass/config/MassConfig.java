@@ -46,8 +46,14 @@ public final class MassConfig {
     public final boolean vehicleHorsesEnabled;
     public final double  vehicleSpeedReductionPerKg;
     public final double  vehicleMaxReduction;
+    public final boolean vehicleBoatsEnabled;
+    public final double  vehicleBoatSpeedReductionPerKg;
+    public final double  vehicleBoatMaxReduction;
+    public final double  vehicleBoatBaseSpeed;
     public final boolean vehicleElytraEnabled;
     public final double  vehicleElytraDisableAbove;
+    public final double  waterSinkAbove;
+    public final double  waterSinkSpeed;
 
     public final boolean debugLogWeightLookups;
     public final boolean debugLogPenaltyChanges;
@@ -109,11 +115,17 @@ public final class MassConfig {
         sourceLoot                    = cfg.getBoolean("sources.loot.enabled", true);
         sourceLootInjectChance        = cfg.getDouble("sources.loot.inject_chance", 0.30);
 
-        vehicleHorsesEnabled       = cfg.getBoolean("vehicles.horses.enabled", true);
-        vehicleSpeedReductionPerKg = cfg.getDouble("vehicles.horses.speed_reduction_per_kg", 0.010);
-        vehicleMaxReduction        = cfg.getDouble("vehicles.horses.max_reduction", 0.85);
-        vehicleElytraEnabled       = cfg.getBoolean("vehicles.elytra.enabled", true);
-        vehicleElytraDisableAbove  = cfg.getDouble("vehicles.elytra.disable_above", 12.0);
+        vehicleHorsesEnabled             = cfg.getBoolean("vehicles.horses.enabled", true);
+        vehicleSpeedReductionPerKg       = cfg.getDouble("vehicles.horses.speed_reduction_per_kg", 0.010);
+        vehicleMaxReduction              = cfg.getDouble("vehicles.horses.max_reduction", 0.85);
+        vehicleBoatsEnabled              = cfg.getBoolean("vehicles.boats.enabled", true);
+        vehicleBoatSpeedReductionPerKg   = cfg.getDouble("vehicles.boats.speed_reduction_per_kg", 0.012);
+        vehicleBoatMaxReduction          = cfg.getDouble("vehicles.boats.max_reduction", 0.80);
+        vehicleBoatBaseSpeed             = cfg.getDouble("vehicles.boats.base_speed", 0.40);
+        vehicleElytraEnabled             = cfg.getBoolean("vehicles.elytra.enabled", true);
+        vehicleElytraDisableAbove        = cfg.getDouble("vehicles.elytra.disable_above", 12.0);
+        waterSinkAbove                   = cfg.getDouble("water.sink_above", 35.0);
+        waterSinkSpeed                   = cfg.getDouble("water.sink_speed", 0.15);
 
         debugLogWeightLookups  = cfg.getBoolean("debug.log_weight_lookups", false);
         debugLogPenaltyChanges = cfg.getBoolean("debug.log_penalty_changes", false);
