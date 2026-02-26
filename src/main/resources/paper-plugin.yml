@@ -1,0 +1,13 @@
+name: Mass
+version: '${project.version}'
+main: com.example.mass.MassPlugin
+bootstrapper: com.example.mass.MassBootstrap
+api-version: '1.21.11'
+description: Weight and encumbrance system with the Lightening enchantment.
+authors:
+  - MassTeam
+
+permissions:
+  mass.admin:
+    description: Allows use of all /mass admin commands.
+    default: op

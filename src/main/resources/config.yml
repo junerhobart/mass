@@ -1,0 +1,569 @@
+# -------------------------------------------------------
+#  Mass  —  Weight & Encumbrance  (Paper 1.21.11)
+#
+#  Weight philosophy: each item weighs roughly what its
+#  crafting materials weigh.  1 diamond = 1 kg, so a
+#  diamond chestplate (8 diamonds) = 8 kg.
+# -------------------------------------------------------
+
+display:
+  lore:
+    enabled: true
+    weight_format: "Weight: {weight} kg"
+    effective_enabled: false
+    effective_format: "Effective: {effective} kg"
+
+# -------------------------------------------------------
+#  BASE MATERIAL WEIGHTS (used to derive everything else)
+#
+#   diamond      = 1.0 kg
+#   iron ingot   = 0.4 kg
+#   gold ingot   = 1.5 kg  (gold is very dense)
+#   netherite    = 2.5 kg  (extremely dense alloy)
+#   leather      = 0.1 kg
+#   wood plank   = 0.1 kg
+#   cobblestone  = 0.3 kg
+# -------------------------------------------------------
+weights:
+
+  categories:
+    slab:              0.15
+    stairs:            0.22
+    wall:              0.20
+    fence:             0.15
+    fence_gate:        0.18
+    wool:              0.20
+    carpet:            0.08
+    concrete:          0.28
+    concrete_powder:   0.22
+    terracotta:        0.28
+    glass:             0.12
+    glass_pane:        0.06
+    leaves:            0.05
+    bed:               0.40
+    banner:            0.20
+    candle:            0.06
+    door:              0.20
+    trapdoor:          0.15
+    sign:              0.08
+    hanging_sign:      0.08
+    button:            0.03
+    pressure_plate:    0.08
+    spawn_egg:         0.05
+    music_disc:        0.10
+    pottery_sherd:     0.06
+    smithing_template: 0.04
+    coral:             0.06
+    coral_fan:         0.04
+    coral_block:       0.10
+    seeds:             0.02
+    dye:               0.02
+    sapling:           0.05
+
+  defaults:
+    # Armour — (recipe material count) × (material kg)
+    # leather=0.1  chainmail≈iron  iron=0.4  gold=1.5  diamond=1.0  netherite=diamond+2.5
+    armor:
+      leather:
+        helmet:     0.5     # 5 × 0.10
+        chestplate: 0.8     # 8 × 0.10
+        leggings:   0.7     # 7 × 0.10
+        boots:      0.4     # 4 × 0.10
+      chainmail:
+        helmet:     2.5     # iron-equivalent, heavier chain structure
+        chestplate: 4.0
+        leggings:   3.5
+        boots:      2.0
+      iron:
+        helmet:     2.0     # 5 × 0.40
+        chestplate: 3.2     # 8 × 0.40
+        leggings:   2.8     # 7 × 0.40
+        boots:      1.6     # 4 × 0.40
+      golden:
+        helmet:     7.5     # 5 × 1.50
+        chestplate: 12.0    # 8 × 1.50 — gold is very heavy
+        leggings:   10.5    # 7 × 1.50
+        boots:      6.0     # 4 × 1.50
+      diamond:
+        helmet:     5.0     # 5 × 1.00
+        chestplate: 8.0     # 8 × 1.00
+        leggings:   7.0     # 7 × 1.00
+        boots:      4.0     # 4 × 1.00
+      netherite:
+        helmet:     7.5     # diamond + 2.5 netherite ingot
+        chestplate: 10.5
+        leggings:   9.5
+        boots:      6.5
+      turtle:
+        helmet:     1.0     # 5 scutes × 0.20
+
+    # Tools — (material count) × (material kg), sticks are negligible
+    tools:
+      wooden:
+        pickaxe: 0.3    # 3 × 0.10
+        axe:     0.3
+        shovel:  0.1    # 1 × 0.10
+        hoe:     0.2    # 2 × 0.10
+      stone:
+        pickaxe: 0.9    # 3 × 0.30
+        axe:     0.9
+        shovel:  0.3
+        hoe:     0.6
+      iron:
+        pickaxe: 1.2    # 3 × 0.40
+        axe:     1.2
+        shovel:  0.4
+        hoe:     0.8
+      golden:
+        pickaxe: 4.5    # 3 × 1.50
+        axe:     4.5
+        shovel:  1.5
+        hoe:     3.0
+      diamond:
+        pickaxe: 3.0    # 3 × 1.00
+        axe:     3.0
+        shovel:  1.0
+        hoe:     2.0
+      netherite:
+        pickaxe: 5.5    # diamond + 2.5
+        axe:     5.5
+        shovel:  3.5
+        hoe:     4.5
+
+    weapons:
+      wooden:    { sword: 0.2  }   # 2 × 0.10
+      stone:     { sword: 0.6  }   # 2 × 0.30
+      iron:      { sword: 0.8  }   # 2 × 0.40
+      golden:    { sword: 3.0  }   # 2 × 1.50
+      diamond:   { sword: 2.0  }   # 2 × 1.00
+      netherite: { sword: 4.5  }   # diamond + 2.5
+      bow:       0.3
+      crossbow:  1.5
+      trident:   2.0
+      mace:      3.0    # heavy core (2.5) + breeze rod
+
+    misc:
+      # Equipment
+      SHIELD:   2.5
+      ELYTRA:   0.5
+      WOLF_ARMOR: 1.5
+
+      # Buckets  (steel bucket ≈ 0.5 kg; water/milk ≈ 5 kg; lava is dense)
+      BUCKET:              1.2
+      WATER_BUCKET:        5.0
+      LAVA_BUCKET:         10.0
+      MILK_BUCKET:         5.0
+      POWDER_SNOW_BUCKET:  3.0
+      AXOLOTL_BUCKET:      5.2
+      COD_BUCKET:          5.0
+      SALMON_BUCKET:       5.0
+      TROPICAL_FISH_BUCKET: 5.0
+      PUFFERFISH_BUCKET:   5.0
+      TADPOLE_BUCKET:      5.0
+
+      # Raw materials — the base numbers everything else derives from
+      DIAMOND:         1.0
+      EMERALD:         0.8
+      IRON_INGOT:      0.4
+      GOLD_INGOT:      1.5
+      COPPER_INGOT:    0.5
+      NETHERITE_INGOT: 2.5
+      NETHERITE_SCRAP: 0.8
+      RAW_IRON:        0.4
+      RAW_GOLD:        1.5
+      RAW_COPPER:      0.5
+      IRON_NUGGET:     0.04
+      GOLD_NUGGET:     0.15
+      COAL:            0.15
+      CHARCOAL:        0.15
+      LAPIS_LAZULI:    0.10
+      REDSTONE:        0.05
+      GLOWSTONE_DUST:  0.02
+      AMETHYST_SHARD:  0.20
+      QUARTZ:          0.10
+      ECHO_SHARD:      0.15
+      PRISMARINE_SHARD:    0.08
+      PRISMARINE_CRYSTALS: 0.05
+      ARMADILLO_SCUTE: 0.04
+      FLINT:           0.12
+      LEATHER:         0.10
+      RABBIT_HIDE:     0.05
+
+      # Stone and earth
+      COBBLESTONE:         0.30
+      STONE:               0.30
+      SMOOTH_STONE:        0.30
+      GRANITE:             0.30
+      POLISHED_GRANITE:    0.30
+      DIORITE:             0.30
+      POLISHED_DIORITE:    0.30
+      ANDESITE:            0.30
+      POLISHED_ANDESITE:   0.30
+      DEEPSLATE:           0.35
+      COBBLED_DEEPSLATE:   0.35
+      POLISHED_DEEPSLATE:  0.35
+      TUFF:                0.30
+      CALCITE:             0.28
+      BASALT:              0.30
+      POLISHED_BASALT:     0.30
+      BLACKSTONE:          0.30
+      POLISHED_BLACKSTONE: 0.30
+      OBSIDIAN:            0.50
+      CRYING_OBSIDIAN:     0.50
+      NETHERRACK:          0.15
+      END_STONE:           0.35
+      ANCIENT_DEBRIS:      1.20    # very dense
+      GRAVEL:              0.25
+      SAND:                0.20
+      RED_SAND:            0.20
+      SOUL_SAND:           0.22
+      SOUL_SOIL:           0.22
+      DIRT:                0.15
+      GRASS_BLOCK:         0.15
+      COARSE_DIRT:         0.15
+      ROOTED_DIRT:         0.15
+      PODZOL:              0.15
+      MYCELIUM:            0.15
+      CLAY:                0.22
+      CLAY_BALL:           0.06
+      ICE:                 0.25
+      PACKED_ICE:          0.28
+      BLUE_ICE:            0.30
+      SNOW_BLOCK:          0.10
+      MAGMA_BLOCK:         0.30
+      SANDSTONE:           0.28
+      RED_SANDSTONE:       0.28
+      MOSSY_COBBLESTONE:   0.30
+      BRICKS:              0.28
+      BRICK:               0.10
+      NETHER_BRICKS:       0.28
+      NETHER_BRICK:        0.10
+      PRISMARINE:          0.28
+      PRISMARINE_BRICKS:   0.28
+      DARK_PRISMARINE:     0.28
+
+      # Heavy metal/gem blocks — 9 ingots per block recipe
+      IRON_BLOCK:      3.6    # 9 × 0.40
+      GOLD_BLOCK:      13.5   # 9 × 1.50 — absurdly heavy, as it should be
+      DIAMOND_BLOCK:   9.0    # 9 × 1.00
+      EMERALD_BLOCK:   7.2    # 9 × 0.80
+      NETHERITE_BLOCK: 22.5   # 9 × 2.50 — don't carry many of these
+      COPPER_BLOCK:    4.5    # 9 × 0.50
+      AMETHYST_BLOCK:  1.8
+      LAPIS_BLOCK:     0.9
+      COAL_BLOCK:      1.35
+      REDSTONE_BLOCK:  0.45
+      QUARTZ_BLOCK:    0.40
+
+      # Ores (heavier than plain stone)
+      COAL_ORE:                0.35
+      DEEPSLATE_COAL_ORE:      0.40
+      IRON_ORE:                0.45
+      DEEPSLATE_IRON_ORE:      0.50
+      GOLD_ORE:                0.50
+      DEEPSLATE_GOLD_ORE:      0.55
+      NETHER_GOLD_ORE:         0.40
+      COPPER_ORE:              0.40
+      DEEPSLATE_COPPER_ORE:    0.45
+      DIAMOND_ORE:             0.45
+      DEEPSLATE_DIAMOND_ORE:   0.50
+      EMERALD_ORE:             0.45
+      DEEPSLATE_EMERALD_ORE:   0.50
+      LAPIS_ORE:               0.40
+      DEEPSLATE_LAPIS_ORE:     0.45
+      REDSTONE_ORE:            0.40
+      DEEPSLATE_REDSTONE_ORE:  0.45
+      NETHER_QUARTZ_ORE:       0.35
+
+      # Wood — logs are heavy
+      OAK_LOG:         0.50
+      SPRUCE_LOG:      0.50
+      BIRCH_LOG:       0.45
+      JUNGLE_LOG:      0.55
+      ACACIA_LOG:      0.50
+      DARK_OAK_LOG:    0.55
+      MANGROVE_LOG:    0.50
+      CHERRY_LOG:      0.45
+      BAMBOO_BLOCK:    0.20
+      PALE_OAK_LOG:    0.50
+      CRIMSON_STEM:    0.45
+      WARPED_STEM:     0.45
+      OAK_PLANKS:      0.10
+      SPRUCE_PLANKS:   0.10
+      BIRCH_PLANKS:    0.09
+      JUNGLE_PLANKS:   0.11
+      ACACIA_PLANKS:   0.10
+      DARK_OAK_PLANKS: 0.11
+      MANGROVE_PLANKS: 0.10
+      CHERRY_PLANKS:   0.09
+      BAMBOO_PLANKS:   0.05
+      PALE_OAK_PLANKS: 0.10
+      CRIMSON_PLANKS:  0.09
+      WARPED_PLANKS:   0.09
+      STICK:           0.02
+
+      # Food — each steak is 100-150g, 64 = 6-10 kg total
+      APPLE:                  0.10
+      GOLDEN_APPLE:           0.20
+      ENCHANTED_GOLDEN_APPLE: 0.20
+      BREAD:                  0.12
+      COOKIE:                 0.05
+      CAKE:                   0.80
+      PUMPKIN_PIE:            0.35
+      CARROT:                 0.08
+      GOLDEN_CARROT:          0.15
+      POTATO:                 0.10
+      BAKED_POTATO:           0.09
+      POISONOUS_POTATO:       0.10
+      BEETROOT:               0.08
+      MELON_SLICE:            0.06
+      SWEET_BERRIES:          0.04
+      GLOW_BERRIES:           0.04
+      DRIED_KELP:             0.02
+      CHORUS_FRUIT:           0.06
+      BEEF:                   0.15
+      PORKCHOP:               0.15
+      CHICKEN:                0.12
+      MUTTON:                 0.14
+      RABBIT:                 0.10
+      COD:                    0.12
+      SALMON:                 0.15
+      TROPICAL_FISH:          0.08
+      PUFFERFISH:             0.08
+      COOKED_BEEF:            0.15    # 64 steaks = 9.6 kg
+      COOKED_PORKCHOP:        0.15
+      COOKED_CHICKEN:         0.12
+      COOKED_MUTTON:          0.14
+      COOKED_RABBIT:          0.10
+      COOKED_COD:             0.12
+      COOKED_SALMON:          0.15
+      RABBIT_STEW:            0.35
+      MUSHROOM_STEW:          0.35
+      BEETROOT_SOUP:          0.35
+      SUSPICIOUS_STEW:        0.35
+      HONEY_BOTTLE:           0.40
+      WHEAT:                  0.06
+      SUGAR:                  0.04
+      SUGAR_CANE:             0.06
+      EGG:                    0.06
+
+      # Potions
+      POTION:            0.30
+      SPLASH_POTION:     0.30
+      LINGERING_POTION:  0.30
+      GLASS_BOTTLE:      0.18
+      EXPERIENCE_BOTTLE: 0.20
+
+      # Tools
+      FISHING_ROD:    0.25
+      FLINT_AND_STEEL: 0.35
+      SHEARS:         0.80   # 2 iron ingots
+      COMPASS:        0.15
+      CLOCK:          0.15
+      SPYGLASS:       0.50   # 2 copper + amethyst
+      LEAD:           0.12
+      NAME_TAG:       0.06
+
+      # Books / paper
+      BOOK:            0.18
+      WRITTEN_BOOK:    0.18
+      ENCHANTED_BOOK:  0.18
+      WRITABLE_BOOK:   0.18
+      KNOWLEDGE_BOOK:  0.18
+      MAP:             0.12
+      FILLED_MAP:      0.12
+      PAPER:           0.02
+
+      # Plants
+      BAMBOO:              0.04
+      CACTUS:              0.10
+      DEAD_BUSH:           0.02
+      FERN:                0.01
+      GRASS:               0.01
+      TALL_GRASS:          0.02
+      LARGE_FERN:          0.02
+      RED_MUSHROOM:        0.04
+      BROWN_MUSHROOM:      0.04
+      CRIMSON_FUNGUS:      0.04
+      WARPED_FUNGUS:       0.04
+      NETHER_WART:         0.04
+      RED_MUSHROOM_BLOCK:  0.15
+      BROWN_MUSHROOM_BLOCK: 0.15
+      SEA_PICKLE:          0.06
+      KELP:                0.02
+      SEAGRASS:            0.02
+      LILY_PAD:            0.04
+      VINE:                0.01
+      STRING:              0.01
+      FEATHER:             0.01
+      BONE:                0.20
+      BONE_MEAL:           0.04
+      INK_SAC:             0.04
+      GLOW_INK_SAC:        0.04
+      GUNPOWDER:           0.06
+      DANDELION:           0.02
+      POPPY:               0.02
+      CORNFLOWER:          0.02
+      LILY_OF_THE_VALLEY:  0.02
+      WITHER_ROSE:         0.02
+      SUNFLOWER:           0.04
+      LILAC:               0.04
+      CHORUS_FLOWER:       0.05
+
+      # Torches / light
+      TORCH:        0.03
+      SOUL_TORCH:   0.03
+      LANTERN:      0.25
+      SOUL_LANTERN: 0.25
+      CAMPFIRE:     0.60
+      SOUL_CAMPFIRE: 0.60
+
+      # Containers / utility
+      CHEST:            1.00
+      TRAPPED_CHEST:    1.00
+      BARREL:           1.00
+      ANVIL:            7.20   # 3 iron blocks + 4 iron ingots = 3×3.6 + 4×0.4 = 12.4... let's keep it dramatic
+      CHIPPED_ANVIL:    6.80
+      DAMAGED_ANVIL:    6.40
+      FURNACE:          2.40   # 8 cobblestone
+      BLAST_FURNACE:    3.00
+      SMOKER:           2.00
+      CRAFTING_TABLE:   0.40
+      GRINDSTONE:       3.20
+      STONECUTTER:      2.50
+      SMITHING_TABLE:   2.00
+      ENCHANTING_TABLE: 4.00   # obsidian + diamond + book
+      BREWING_STAND:    1.60
+      CAULDRON:         3.60   # 7 iron ingots
+      GLASS:            0.12
+      GLASS_PANE:       0.06
+
+      # Special / rare
+      TOTEM_OF_UNDYING:   0.12
+      ENDER_PEARL:        0.20
+      ENDER_EYE:          0.15
+      NETHER_STAR:        0.80
+      HEART_OF_THE_SEA:   0.30
+      NAUTILUS_SHELL:     0.20
+      BLAZE_ROD:          0.25
+      BLAZE_POWDER:       0.06
+      GHAST_TEAR:         0.06
+      DRAGON_BREATH:      0.15
+      PHANTOM_MEMBRANE:   0.06
+      RABBIT_FOOT:        0.04
+      FERMENTED_SPIDER_EYE: 0.04
+      SPIDER_EYE:         0.04
+      SLIMEBALL:          0.06
+      MAGMA_CREAM:        0.06
+      TURTLE_EGG:         0.12
+      SNOWBALL:           0.06
+      FIRE_CHARGE:        0.06
+      BOWL:               0.06
+
+      # 1.21 items
+      BREEZE_ROD:        0.30
+      HEAVY_CORE:        2.50
+      WIND_CHARGE:       0.12
+      TRIAL_KEY:         0.06
+      OMINOUS_TRIAL_KEY: 0.06
+      OMINOUS_BOTTLE:    0.20
+
+      fallback: 0.05
+
+  overrides: {}
+
+# -------------------------------------------------------
+#  SCOPE
+# -------------------------------------------------------
+scope:
+  mode: EVERYTHING
+
+# -------------------------------------------------------
+#  PENALTIES
+#
+#  New weight targets with recipe-based values:
+#   Empty / bare:            0–6 kg   → no penalty
+#   Leather armor + tools:   ~3 kg    → tier 1
+#   Iron armor + tools:      ~12 kg   → tier 2/3
+#   Diamond armor alone:     24 kg    → tier 4 (juggernaut)
+#   Netherite armor:         34 kg    → tier 5
+#   64 steaks:               9.6 kg   → noticeable but manageable alone
+# -------------------------------------------------------
+penalties:
+  enabled: true
+  tiers:
+    - max_weight: 6.0
+      speed_multiplier: 1.00
+      jump_multiplier:  1.00
+
+    - max_weight: 12.0
+      speed_multiplier: 0.92
+      jump_multiplier:  0.88
+
+    - max_weight: 20.0
+      speed_multiplier: 0.80
+      jump_multiplier:  0.70
+
+    - max_weight: 28.0
+      speed_multiplier: 0.62
+      jump_multiplier:  0.25    # diamond armour lands here
+
+    - max_weight: 9999.0
+      speed_multiplier: 0.45
+      jump_multiplier:  0.00    # can't jump — netherite full kit
+
+  # No sprinting once over iron-armour-plus-kit threshold.
+  # Diamond armour (24 kg) is well above this.
+  disable_sprint_above: 20.0
+
+# -------------------------------------------------------
+#  VEHICLES
+# -------------------------------------------------------
+vehicles:
+  horses:
+    enabled: true
+    # Fraction of speed lost per kg of total rider+cargo load.
+    # 24 kg diamond rider → 24 × 0.010 = 24% slower horse.
+    speed_reduction_per_kg: 0.010
+    # Hard cap — horse never drops below this fraction of base speed.
+    max_reduction: 0.85
+  elytra:
+    enabled: true
+    # Weight above which elytra gliding is prevented entirely.
+    # 12 kg = roughly iron armour + a few items.
+    disable_above: 12.0
+
+# -------------------------------------------------------
+#  LIGHTENING ENCHANTMENT
+# -------------------------------------------------------
+enchantments:
+  lightening:
+    enabled: true
+    max_level: 3
+    reductions:
+      1: 0.30
+      2: 0.45
+      3: 0.60
+    treasure: false
+    anvil_combine: true
+
+# -------------------------------------------------------
+#  SOURCES
+# -------------------------------------------------------
+sources:
+  enchanting_table:
+    enabled: true
+  villagers:
+    enabled: true
+    max_per_villager: 1
+  loot:
+    enabled: true
+    inject_chance: 0.30
+
+# -------------------------------------------------------
+#  DEBUG
+# -------------------------------------------------------
+debug:
+  log_weight_lookups:  false
+  log_penalty_changes: false
+  log_loot_injection:  false
