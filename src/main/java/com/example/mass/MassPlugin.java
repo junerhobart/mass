@@ -43,12 +43,12 @@ public final class MassPlugin extends JavaPlugin {
             encumbranceService.scheduleUpdate(player);
         }
 
-        // Water sink tick — runs every 4 ticks, pushes heavy players down in water
+        // Water sink tick — runs every 2 ticks for responsive sinking
         getServer().getScheduler().runTaskTimer(this, () -> {
             for (Player p : getServer().getOnlinePlayers()) {
-                if (p.isInWater()) encumbranceService.tickWater(p);
+                encumbranceService.tickWater(p);
             }
-        }, 5L, 4L);
+        }, 5L, 2L);
 
         if (com.example.mass.enchant.LighteningEnchant.get() == null) {
             getLogger().warning("Lightening enchantment not registered — check bootstrap.");
