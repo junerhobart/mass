@@ -12,16 +12,6 @@ Horses slow down based on the rider's weight. Donkeys with chests include the ch
 
 The Lightening enchantment can be applied to armor to reduce its contribution to your weight. It comes in three levels (30%, 45%, 60% reduction) and can be obtained from enchanting tables, librarian villagers, loot chests, or with `/mass give lightening`.
 
-## Building
-
-Requires Java 21 and Maven.
-
-```
-mvn package
-```
-
-The compiled jar ends up at `target/Mass-#.#.jar`.
-
 ## Commands
 
 All commands require the `mass.admin` permission.
