@@ -5,7 +5,7 @@ bootstrapper: com.example.mass.MassBootstrap
 api-version: '1.21.11'
 description: Weight and encumbrance system with the Lightening enchantment.
 authors:
-  - MassTeam
+  - June
 
 permissions:
   mass.admin:

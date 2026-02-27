@@ -3,6 +3,7 @@ package com.example.mass;
 import com.example.mass.command.MassCommand;
 import com.example.mass.config.MassConfig;
 import com.example.mass.listener.LootListener;
+import com.example.mass.listener.MobListener;
 import com.example.mass.listener.PlayerListener;
 import com.example.mass.listener.VehicleListener;
 import com.example.mass.listener.VillagerListener;
@@ -32,6 +33,7 @@ public final class MassPlugin extends JavaPlugin {
 
         var pm = getServer().getPluginManager();
         pm.registerEvents(new PlayerListener(encumbranceService, loreService), this);
+        pm.registerEvents(new MobListener(this, weightService), this);
         pm.registerEvents(new VehicleListener(this, encumbranceService, weightService), this);
         pm.registerEvents(new VillagerListener(this), this);
         pm.registerEvents(new LootListener(this), this);

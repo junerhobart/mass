@@ -573,6 +573,14 @@ sources:
     inject_chance: 0.30
 
 # -------------------------------------------------------
+#  MOBS
+# -------------------------------------------------------
+mobs:
+  # Apply speed and jump penalties to mobs wearing heavy armor.
+  # Uses the same penalty tiers as players (armor weight only).
+  enabled: true
+
+# -------------------------------------------------------
 #  DEBUG
 # -------------------------------------------------------
 debug:

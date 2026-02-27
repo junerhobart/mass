@@ -51,6 +51,8 @@ public final class MassConfig {
     public final double  waterSinkAbove;
     public final double  waterSinkSpeed;
 
+    public final boolean mobsEnabled;
+
     public final boolean debugLogWeightLookups;
     public final boolean debugLogPenaltyChanges;
     public final boolean debugLogLootInjection;
@@ -118,6 +120,8 @@ public final class MassConfig {
         vehicleElytraDisableAbove        = cfg.getDouble("vehicles.elytra.disable_above", 12.0);
         waterSinkAbove                   = cfg.getDouble("water.sink_above", 35.0);
         waterSinkSpeed                   = cfg.getDouble("water.sink_speed", 0.15);
+
+        mobsEnabled = cfg.getBoolean("mobs.enabled", true);
 
         debugLogWeightLookups  = cfg.getBoolean("debug.log_weight_lookups", false);
         debugLogPenaltyChanges = cfg.getBoolean("debug.log_penalty_changes", false);
