@@ -61,10 +61,11 @@ jobs:
           changelog = os.environ.get('CHANGELOG', '').strip()
           release_url = os.environ.get('RELEASE_URL', '').strip() or 'https://github.com/junerhobart/mass/releases'
           version = os.environ.get('VERSION', '')
+          modrinth_url = 'https://modrinth.com/plugin/nyW7B8ny'
           parts = [f'**Mass {version} has been released!**']
           if changelog:
             parts.append(changelog)
-          parts.append(release_url)
+          parts.append(f'Modrinth: {modrinth_url}\nGitHub: {release_url}')
           payload = {'content': '\n\n'.join(parts)}
           url = webhook
           thread_id = os.environ.get('DISCORD_THREAD_ID', '').strip()
