@@ -1,2 +1,5 @@
 target/
 *.class
+
+# Local AI context (never commit)
+.context/
