@@ -40,7 +40,7 @@ jobs:
         uses: cloudnode-pro/modrinth-publish@v2
         with:
           token: ${{ secrets.MODRINTH_TOKEN }}
-          project: ${{ vars.MODRINTH_PROJECT_ID }}
+          project: nyW7B8ny
           name: ${{ env.RELEASE_NAME }}
           version: ${{ env.VERSION }}
           changelog: ${{ env.CHANGELOG }}
@@ -88,5 +88,4 @@ jobs:
           "
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_THREAD_ID: ${{ vars.DISCORD_THREAD_ID }}
-          MODRINTH_PROJECT_ID: ${{ vars.MODRINTH_PROJECT_ID }}
+          DISCORD_THREAD_ID: "1476643267587346533"

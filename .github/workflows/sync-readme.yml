@@ -19,7 +19,7 @@ jobs:
           python3 -c "
           import urllib.request, json, os
           readme = open('README.md').read()
-          project_id = os.environ['MODRINTH_PROJECT_ID']
+          project_id = 'nyW7B8ny'
           req = urllib.request.Request(
             f'https://api.modrinth.com/v2/project/{project_id}',
             data=json.dumps({'body': readme}).encode(),
@@ -35,4 +35,3 @@ jobs:
           "
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-          MODRINTH_PROJECT_ID: ${{ vars.MODRINTH_PROJECT_ID }}
