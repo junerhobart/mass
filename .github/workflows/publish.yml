@@ -76,8 +76,25 @@ jobs:
           content = (chr(10) + chr(10)).join(parts)
           thread_id = os.environ.get('DISCORD_THREAD_ID', '').strip()
           url = webhook + ('&' if '?' in webhook else '?') + 'thread_id=' + thread_id if thread_id else webhook
-          body = json.dumps({'content': content}).encode()
-          headers = {'Content-Type': 'application/json', 'User-Agent': 'Mass-GitHubAction/1.0'}
+          jar_path = f'target/Mass-{version}.jar'
+          boundary = b'----MassWebhookBoundary'
+          payload_json = json.dumps({'content': content}).encode()
+          body = b''
+          body += b'--' + boundary + b'\r\n'
+          body += b'Content-Disposition: form-data; name=\"payload_json\"\r\n'
+          body += b'Content-Type: application/json\r\n\r\n'
+          body += payload_json + b'\r\n'
+          if os.path.exists(jar_path):
+            filename = os.path.basename(jar_path).encode()
+            with open(jar_path, 'rb') as f:
+              file_data = f.read()
+            body += b'--' + boundary + b'\r\n'
+            body += b'Content-Disposition: form-data; name=\"files[0]\"; filename=\"' + filename + b'\"\r\n'
+            body += b'Content-Type: application/java-archive\r\n\r\n'
+            body += file_data + b'\r\n'
+            print(f'Attaching {jar_path} ({len(file_data)} bytes)')
+          body += b'--' + boundary + b'--\r\n'
+          headers = {'Content-Type': f'multipart/form-data; boundary={boundary.decode()}', 'User-Agent': 'Mass-GitHubAction/1.0'}
           req = urllib.request.Request(url, data=body, headers=headers)
           try:
             res = urllib.request.urlopen(req)
