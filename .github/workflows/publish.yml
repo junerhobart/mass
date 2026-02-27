@@ -8,6 +8,10 @@ on:
       version:
         description: Version tag (e.g. 1.2)
         required: true
+      changelog:
+        description: Release notes
+        required: false
+        default: ''
 
 jobs:
   publish:
@@ -17,7 +21,7 @@ jobs:
       VERSION: ${{ github.event.release.tag_name || inputs.version }}
       RELEASE_URL: ${{ github.event.release.html_url || '' }}
       RELEASE_NAME: ${{ github.event.release.name || inputs.version }}
-      CHANGELOG: ${{ github.event.release.body || '' }}
+      CHANGELOG: ${{ github.event.release.body || inputs.changelog || '' }}
     steps:
       - uses: actions/checkout@v4
 
