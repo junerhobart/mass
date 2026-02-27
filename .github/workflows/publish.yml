@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version tag (e.g. 1.1)
+        description: Version tag (e.g. 1.2)
         required: true
 
 jobs:
@@ -19,20 +19,18 @@ jobs:
       RELEASE_NAME: ${{ github.event.release.name || inputs.version }}
       CHANGELOG: ${{ github.event.release.body || '' }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: temurin
           cache: maven
 
-      - name: Set version from tag
+      - name: Set version
         run: mvn -B versions:set -DnewVersion=${{ env.VERSION }} -DgenerateBackupPoms=false
 
-      - name: Build with Maven
+      - name: Build
         run: mvn -B clean package --file pom.xml
 
       - name: Publish to Modrinth
@@ -61,32 +59,33 @@ jobs:
           changelog = os.environ.get('CHANGELOG', '').strip()
           release_url = os.environ.get('RELEASE_URL', '').strip() or 'https://github.com/junerhobart/mass/releases'
           version = os.environ.get('VERSION', '')
-          modrinth_url = 'https://modrinth.com/plugin/nyW7B8ny'
-          parts = [f'**Mass {version} has been released!**']
+          project_name = 'Mass'
+          parts = [f'**{project_name} {version} has been released!**']
           if changelog:
             parts.append(changelog)
-          parts.append(f'Modrinth: {modrinth_url}\nGitHub: {release_url}')
-          payload = {'content': '\n\n'.join(parts)}
-          url = webhook
+          links = [f'<{release_url}>']
+          for key in ['MODRINTH_PAGE_URL']:
+            val = os.environ.get(key, '').strip()
+            if val:
+              links.append(f'<{val}>')
+          parts.append(chr(10).join(links))
+          content = (chr(10) + chr(10)).join(parts)
           thread_id = os.environ.get('DISCORD_THREAD_ID', '').strip()
-          if thread_id:
-            url += ('&' if '?' in url else '?') + 'thread_id=' + thread_id
-          req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode(),
-            headers={
-              'Content-Type': 'application/json',
-              'User-Agent': 'Mass-GitHubAction/1.0'
-            }
-          )
+          url = webhook + ('&' if '?' in webhook else '?') + 'thread_id=' + thread_id if thread_id else webhook
+          body = json.dumps({'content': content}).encode()
+          headers = {'Content-Type': 'application/json', 'User-Agent': 'Mass-GitHubAction/1.0'}
+          req = urllib.request.Request(url, data=body, headers=headers)
           try:
             res = urllib.request.urlopen(req)
             print('Discord notified. Status:', res.status)
           except urllib.error.HTTPError as e:
-            print('Discord error:', e.code, e.reason)
-            print('Response:', e.read().decode())
+            print('Discord error:', e.code, e.reason, e.read().decode())
             sys.exit(1)
           "
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_THREAD_ID: "1476643267587346533"
+          VERSION: ${{ env.VERSION }}
+          RELEASE_URL: ${{ env.RELEASE_URL }}
+          CHANGELOG: ${{ env.CHANGELOG }}
+          MODRINTH_PAGE_URL: https://modrinth.com/project/nyW7B8ny
