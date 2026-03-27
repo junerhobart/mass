@@ -64,3 +64,9 @@ Output goes to `target/Mass-1.2.jar`.
 - Stackable items do not get lore or extra item data that would break stacking
 - The plugin uses `Lightening`, not `Lightning`. That is on purpose
 - If something feels off, check the config first. Most of the balance lives there
+
+## Discord
+
+If you want updates, feedback, or bug reports, join the Discord:
+
+[discord.gg/WQ628mcr4w](https://discord.gg/WQ628mcr4w)
