@@ -1,30 +1,66 @@
 # Mass
 
-A Paper plugin for Minecraft 1.21.11 that adds a weight and encumbrance system. Every item you carry has a physical weight that slows you down, limits jumping, and affects the things you ride.
+Minecraft should care what you are carrying.
 
-## How it works
+Mass gives every item a weight. Carry too much and you slow down, lose sprint, lose jump, sink in water, and make horses regret meeting you.
 
-Every item has a weight in kg based on what it is made of. One diamond is 1 kg, so a diamond chestplate (8 diamonds) weighs 8 kg. Everything scales from there: iron is lighter, gold and netherite are heavier.
+## What it does
 
-Weight is tracked across all inventory slots: armor, hotbar, main inventory, and offhand. As your total load increases you slow down and eventually cannot sprint or jump. Full diamond armor alone will disable sprinting. Full netherite is basically immovable.
+- Tracks weight across armor, hotbar, inventory, and offhand
+- Slows movement as your load goes up
+- Disables sprint and jump at higher weight tiers
+- Makes heavy players sink in water
+- Slows horses and counts chest cargo on horse-type mounts
+- Blocks elytra when you are over the limit
+- Adds the `Lightening` enchantment to make armor lighter
 
-Horses slow down based on the rider's weight. Donkeys with chests include the chest contents in the load calculation. Elytra gliding is blocked entirely once you are too heavy.
+A diamond chestplate weighs 8 kg. Full diamond is enough to matter. Full netherite is a life choice.
 
-The Lightening enchantment can be applied to armor to reduce its contribution to your weight. It comes in three levels (30%, 45%, 60% reduction) and can be obtained from enchanting tables, librarian villagers, loot chests, or with `/mass give lightening`.
+## Install
+
+- Use Paper `1.21.11+`
+- Drop the jar into `plugins/`
+- Start the server once
+- Edit `plugins/Mass/config.yml` if you want different weights or penalty thresholds
+- Run `/mass reload`
 
 ## Commands
 
-All commands require the `mass.admin` permission.
+All commands use `mass.admin`.
 
-| Command | Description |
-|---|---|
-| `/mass reload` | Reload config.yml |
-| `/mass info [player]` | Show weight breakdown |
-| `/mass lore [player]` | Force-refresh weight lore in inventory |
-| `/mass item set <kg>` | Override held item's weight |
-| `/mass item clear` | Remove weight override from held item |
-| `/mass give lightening [1-3]` | Give a Lightening enchanted book |
+- `/mass reload`
+- `/mass info [player]`
+- `/mass lore [player]`
+- `/mass item set <kg>`
+- `/mass item clear`
+- `/mass give lightening [1-3]`
 
-## Configuration
+## Config
 
-Edit `plugins/Mass/config.yml`. You can change individual item weights, penalty thresholds, vehicle settings, and enchantment behavior. Run `/mass reload` to apply changes without restarting.
+The config is where most of the real control lives.
+
+You can change:
+
+- item weights
+- category defaults
+- sprint and jump thresholds
+- water sinking
+- horse slowdown
+- elytra limit
+- enchantment settings
+
+If you want the plugin to feel punishing, you can do that. If you want it lighter and more survival-friendly, you can do that too.
+
+## Build
+
+```bash
+mvn clean package
+```
+
+Output goes to `target/Mass-1.2.jar`.
+
+## Notes
+
+- Stackable items do not get lore or extra item data that would break stacking
+- The plugin uses `Lightening`, not `Lightning`. That is on purpose
+- If something feels off, check the config first. Most of the balance lives there
